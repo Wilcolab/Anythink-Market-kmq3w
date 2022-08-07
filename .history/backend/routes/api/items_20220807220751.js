@@ -186,8 +186,8 @@ router.put("/:item", auth.required, function(req, res, next) {
         req.item.image = req.body.item.image;
       }
 
-      if (typeof req.body.item.image == "undefined") {
-        req.item.image = '/placeholder.png';
+      if (typeof req.body.item.image !== "undefined") {
+        req.item.image = req.body.item.image;
       }
 
       if (typeof req.body.item.tagList !== "undefined") {
