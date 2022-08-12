@@ -7,21 +7,21 @@ var auth = require("../auth");
 const { sendEvent } = require("../../lib/event");
 const { application } = require("express");
 
-// Preload item objects on routes with ':item'
-// router.param("item", function(req, res, next, slug) {
-//   Item.findOne({ slug: slug })
-//     .populate("seller")
-//     .then(function(item) {
-//       if (!item) {
-//         return res.sendStatus(404);
-//       }
+Preload item objects on routes with ':item'
+router.param("item", function(req, res, next, slug) {
+  Item.findOne({ slug: slug })
+    .populate("seller")
+    .then(function(item) {
+      if (!item) {
+        return res.sendStatus(404);
+      }
 
-//       req.item = item;
+      req.item = item;
 
-//       return next();
-//     })
-//     .catch(next);
-// });
+      return next();
+    })
+    .catch(next);
+});
 
 router.param("item", function(req, res, next, title) {
   const searchField = title;

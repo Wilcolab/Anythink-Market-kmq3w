@@ -24,7 +24,7 @@ const { application } = require("express");
 // });
 
 router.param("item", function(req, res, next, title) {
-  const searchField = title;
+  const searchField = req.query.title;
   Item.find({title: {$regex: searchField, $options: 'i'}})
   .then(data => {
     return res.json(data)
