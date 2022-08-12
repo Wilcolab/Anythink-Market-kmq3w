@@ -8,8 +8,8 @@ const { sendEvent } = require("../../lib/event");
 const { application } = require("express");
 
 // Preload item objects on routes with ':item'
-router.param("item", function(req, res, next, title) {
-  Item.findOne({ title: title })
+router.param("item", function(req, res, next, slug) {
+  Item.findOne({ slug: slug })
     .populate("seller")
     .then(function(item) {
       if (!item) {
