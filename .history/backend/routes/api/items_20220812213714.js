@@ -8,20 +8,20 @@ const { sendEvent } = require("../../lib/event");
 const { application } = require("express");
 
 // Preload item objects on routes with ':item'
-router.param("item", function (req, res, next, slug) {
-  Item.findOne({ slug: slug })
-    .populate("seller")
-    .then(function (item) {
-      if (!item) {
-        return res.sendStatus(404);
-      }
+// router.param("item", function (req, res, next, slug) {
+//   Item.findOne({ slug: slug })
+//     .populate("seller")
+//     .then(function (item) {
+//       if (!item) {
+//         return res.sendStatus(404);
+//       }
 
-      req.item = item;
+//       req.item = item;
 
-      return next();
-    })
-    .catch(next);
-});
+//       return next();
+//     })
+//     .catch(next);
+// });
 
 router.param("/", function (req, res, next, title) {
   const searchField = title;
@@ -56,7 +56,6 @@ router.param("comment", function (req, res, next, id) {
 });
 
 router.get("/", auth.optional, function (req, res, next) {
-
   var query = {};
   var limit = 100;
   var offset = 0;
@@ -71,10 +70,6 @@ router.get("/", auth.optional, function (req, res, next) {
 
   if (typeof req.query.tag !== "undefined") {
     query.tagList = { $in: [req.query.tag] };
-  }
-
-  if (typeof req.query.title !== "undefined") {
-    query.title = { "$regex": req.query.title, "$options": "i" };
   }
 
   Promise.all([

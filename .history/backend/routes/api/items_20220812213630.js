@@ -23,12 +23,18 @@ router.param("item", function (req, res, next, slug) {
     .catch(next);
 });
 
-router.param("/", function (req, res, next, title) {
-  const searchField = title;
-  Item.find({title: {$regex: searchField, $options: 'i'}})
-  .then(data => {
-    return res.json(data)
-  })
+router.param("item", function (req, res, next, title) {
+  Item.findOne({ title: title })
+    .populate("seller")
+    .then(function (item) {
+      if (!item) {
+        return res.sendStatus(404);
+      }
+
+      req.item = item;
+
+      return next();
+    })
     .catch(next);
 });
 
@@ -56,7 +62,6 @@ router.param("comment", function (req, res, next, id) {
 });
 
 router.get("/", auth.optional, function (req, res, next) {
-
   var query = {};
   var limit = 100;
   var offset = 0;
@@ -71,10 +76,6 @@ router.get("/", auth.optional, function (req, res, next) {
 
   if (typeof req.query.tag !== "undefined") {
     query.tagList = { $in: [req.query.tag] };
-  }
-
-  if (typeof req.query.title !== "undefined") {
-    query.title = { "$regex": req.query.title, "$options": "i" };
   }
 
   Promise.all([
