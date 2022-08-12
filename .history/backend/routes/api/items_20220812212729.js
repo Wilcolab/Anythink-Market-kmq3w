@@ -23,15 +23,6 @@ router.param("item", function (req, res, next, slug) {
     .catch(next);
 });
 
-router.param("/", function (req, res, next, title) {
-  const searchField = title;
-  Item.find({title: {$regex: searchField, $options: 'i'}})
-  .then(data => {
-    return res.json(data)
-  })
-    .catch(next);
-});
-
 // router.param("item", function(req, res, next, title) {
 //   const searchField = title;
 //   Item.find({title: {$regex: searchField, $options: 'i'}})
@@ -56,7 +47,7 @@ router.param("comment", function (req, res, next, id) {
 });
 
 router.get("/", auth.optional, function (req, res, next) {
-
+  var title = ;
   var query = {};
   var limit = 100;
   var offset = 0;
@@ -65,16 +56,16 @@ router.get("/", auth.optional, function (req, res, next) {
     limit = req.query.limit;
   }
 
+  if (typeof req.query.title !== "undefined") {
+    title = req.query.limit;
+  }
+
   if (typeof req.query.offset !== "undefined") {
     offset = req.query.offset;
   }
 
   if (typeof req.query.tag !== "undefined") {
     query.tagList = { $in: [req.query.tag] };
-  }
-
-  if (typeof req.query.title !== "undefined") {
-    query.title = { "$regex": req.query.title, "$options": "i" };
   }
 
   Promise.all([

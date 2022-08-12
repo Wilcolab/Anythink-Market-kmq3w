@@ -57,6 +57,15 @@ router.param("comment", function (req, res, next, id) {
 
 router.get("/", auth.optional, function (req, res, next) {
 
+  if(typeof req.query.limit !== "undefined"){
+    let title = req.query.title;
+
+    let Card = await Item.findAll()({title: title}).exec();
+
+    // Return the articles to the rendering engine
+    res.json(Card)
+  }
+
   var query = {};
   var limit = 100;
   var offset = 0;
@@ -71,10 +80,6 @@ router.get("/", auth.optional, function (req, res, next) {
 
   if (typeof req.query.tag !== "undefined") {
     query.tagList = { $in: [req.query.tag] };
-  }
-
-  if (typeof req.query.title !== "undefined") {
-    query.title = { "$regex": req.query.title, "$options": "i" };
   }
 
   Promise.all([

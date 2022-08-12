@@ -8,7 +8,7 @@ const { sendEvent } = require("../../lib/event");
 const { application } = require("express");
 
 // Preload item objects on routes with ':item'
-router.param("item", function (req, res, next, slug) {
+router.param("/", function (req, res, next, slug) {
   Item.findOne({ slug: slug })
     .populate("seller")
     .then(function (item) {
@@ -20,15 +20,6 @@ router.param("item", function (req, res, next, slug) {
 
       return next();
     })
-    .catch(next);
-});
-
-router.param("/", function (req, res, next, title) {
-  const searchField = title;
-  Item.find({title: {$regex: searchField, $options: 'i'}})
-  .then(data => {
-    return res.json(data)
-  })
     .catch(next);
 });
 
@@ -56,7 +47,6 @@ router.param("comment", function (req, res, next, id) {
 });
 
 router.get("/", auth.optional, function (req, res, next) {
-
   var query = {};
   var limit = 100;
   var offset = 0;
@@ -71,10 +61,6 @@ router.get("/", auth.optional, function (req, res, next) {
 
   if (typeof req.query.tag !== "undefined") {
     query.tagList = { $in: [req.query.tag] };
-  }
-
-  if (typeof req.query.title !== "undefined") {
-    query.title = { "$regex": req.query.title, "$options": "i" };
   }
 
   Promise.all([
