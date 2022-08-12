@@ -7,7 +7,7 @@ var auth = require("../auth");
 const { sendEvent } = require("../../lib/event");
 
 // Preload item objects on routes with ':item'
-router.param("item", function(req, res, next, title) {
+router.param("item", function(req, res, next, item) {
   Item.findOne({ title: title })
     .populate("seller")
     .then(function(item) {
