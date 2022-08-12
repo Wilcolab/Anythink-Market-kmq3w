@@ -9,7 +9,7 @@ const { application } = require("express");
 
 // Preload item objects on routes with ':item'
 router.param("item", function(req, res, next, slug) {
-  Item.findOne({ title: slug })
+  Item.findOne({ title: title })
     .populate("seller")
     .then(function(item) {
       if (!item) {
