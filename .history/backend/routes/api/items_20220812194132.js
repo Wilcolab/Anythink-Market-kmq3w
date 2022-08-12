@@ -23,20 +23,6 @@ const { application } = require("express");
 //     .catch(next);
 // });
 
-router.param("item", function(req, res, next, title) {
-  Item.findOne({ title: title })
-    .populate("seller")
-    .then(function(item) {
-      if (!item) {
-        return res.sendStatus(404);
-      }
-
-      req.item = item;
-
-      return next();
-    })
-    .catch(next);
-});
 
 router.param("comment", function(req, res, next, id) {
   Comment.findById(id)
