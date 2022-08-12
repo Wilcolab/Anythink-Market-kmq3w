@@ -5,26 +5,10 @@ var Comment = mongoose.model("Comment");
 var User = mongoose.model("User");
 var auth = require("../auth");
 const { sendEvent } = require("../../lib/event");
-const { application } = require("express");
 
 // Preload item objects on routes with ':item'
-// router.param("item", function(req, res, next, slug) {
-//   Item.findOne({ slug: slug })
-//     .populate("seller")
-//     .then(function(item) {
-//       if (!item) {
-//         return res.sendStatus(404);
-//       }
-
-//       req.item = item;
-
-//       return next();
-//     })
-//     .catch(next);
-// });
-
-router.param("item", function(req, res, next, title) {
-  Item.findOne({ title: title })
+router.param("item", function(req, res, next, slug) {
+  Item.findOne({ slug: slug })
     .populate("seller")
     .then(function(item) {
       if (!item) {
@@ -173,10 +157,10 @@ router.post("/", auth.required, function(req, res, next) {
 });
 
 // return a item
-router.get("/:item", auth.optional, function(req, res, next) {
+router.get("/:id", auth.optional, function(req, res, next) {
   Promise.all([
     req.payload ? User.findById(req.payload.id) : null,
-    req.item.populate("seller").execPopulate()
+    req.id.populate("seller").execPopulate()
   ])
     .then(function(results) {
       var user = results[0];

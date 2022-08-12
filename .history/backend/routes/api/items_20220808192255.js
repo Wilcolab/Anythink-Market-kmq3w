@@ -5,26 +5,10 @@ var Comment = mongoose.model("Comment");
 var User = mongoose.model("User");
 var auth = require("../auth");
 const { sendEvent } = require("../../lib/event");
-const { application } = require("express");
 
 // Preload item objects on routes with ':item'
-// router.param("item", function(req, res, next, slug) {
-//   Item.findOne({ slug: slug })
-//     .populate("seller")
-//     .then(function(item) {
-//       if (!item) {
-//         return res.sendStatus(404);
-//       }
-
-//       req.item = item;
-
-//       return next();
-//     })
-//     .catch(next);
-// });
-
-router.param("item", function(req, res, next, title) {
-  Item.findOne({ title: title })
+router.param("item", function(req, res, next, slug) {
+  Item.findOne({ slug: slug })
     .populate("seller")
     .then(function(item) {
       if (!item) {
@@ -178,12 +162,44 @@ router.get("/:item", auth.optional, function(req, res, next) {
     req.payload ? User.findById(req.payload.id) : null,
     req.item.populate("seller").execPopulate()
   ])
-    .then(function(results) {
-      var user = results[0];
+  .then(function(results) {
+    var seller = results[0];
+    var favoriter = results[1];
 
-      return res.json({ item: req.item.toJSONFor(user) });
-    })
-    .catch(next);
+    if (seller) {
+      query.seller = seller._id;
+    }
+
+    if (favoriter) {
+      query._id = { $in: favoriter.favorites };
+    } else if (req.query.favorited) {
+      query._id = { $in: [] };
+    }
+
+    return Promise.all([
+      Item.find(query)
+        .limit(Number(limit))
+        .skip(Number(offset))
+        .sort({ createdAt: "desc" })
+        .exec(),
+      Item.count(query).exec(),
+      req.payload ? User.findById(req.payload.id) : null
+    ]).then(async function(results) {
+      var items = results[0];
+      var itemsCount = results[1];
+      var user = results[2];
+      return res.json({
+        items: await Promise.all(
+          items.map(async function(item) {
+            item.seller = await User.findById(item.seller);
+            return item.toJSONFor(user);
+          })
+        ),
+        itemsCount: itemsCount
+      });
+    });
+  })
+  .catch(next);
 });
 
 // update item

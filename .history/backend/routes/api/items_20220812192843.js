@@ -8,23 +8,8 @@ const { sendEvent } = require("../../lib/event");
 const { application } = require("express");
 
 // Preload item objects on routes with ':item'
-// router.param("item", function(req, res, next, slug) {
-//   Item.findOne({ slug: slug })
-//     .populate("seller")
-//     .then(function(item) {
-//       if (!item) {
-//         return res.sendStatus(404);
-//       }
-
-//       req.item = item;
-
-//       return next();
-//     })
-//     .catch(next);
-// });
-
-router.param("item", function(req, res, next, title) {
-  Item.findOne({ title: title })
+router.param("item", function(req, res, next, slug) {
+  Item.findOne({ slug: slug })
     .populate("seller")
     .then(function(item) {
       if (!item) {
@@ -185,6 +170,14 @@ router.get("/:item", auth.optional, function(req, res, next) {
     })
     .catch(next);
 });
+
+router.get('/users', (req, res) => {
+  const searchField = req.query.title;
+  User.find({title: {$regex: searchField, $options: 'i'}})
+  .then(data => {
+    return res.json(data)
+  })
+})
 
 // update item
 router.put("/:item", auth.required, function(req, res, next) {
