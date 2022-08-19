@@ -9,7 +9,7 @@ const Banner = () => {
         <div>
           <span id="get-part">A place to get  </span>
           <input className="search" type='text' placeholder='search the item' />
-          <span>  the cool stuff.</span>
+          <span> the cool stuff.</span>
         </div>
       </div>
     </div>
