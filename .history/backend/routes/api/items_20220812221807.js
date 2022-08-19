@@ -87,7 +87,7 @@ router.get("/", auth.optional, function (req, res, next) {
       }
 
       return Promise.all([
-        Item.find(query)
+        Item.find(query.title : { $regex": req.query.title, "$options": "i" })
           .limit(Number(limit))
           .skip(Number(offset))
           .sort({ createdAt: "desc" })

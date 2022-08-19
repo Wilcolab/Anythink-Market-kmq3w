@@ -5,7 +5,7 @@ const superagent = superagentPromise(_superagent, global.Promise);
 
 const API_ROOT =
   process.env.NODE_ENV !== "production"
-    ? "http://localhost:3000/api/"
+    ? "http://localhost:3000/api"
     : "https://api.anythink.market/api";
 
 const encode = encodeURIComponent;
@@ -23,7 +23,7 @@ const requests = {
   del: (url) =>
     superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
   get: (url) =>
-    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then((responseBody) => responseBody.meetingName.includes('stic')),
   put: (url, body) =>
     superagent
       .put(`${API_ROOT}${url}`, body)

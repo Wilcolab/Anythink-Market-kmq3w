@@ -65,5 +65,8 @@ body {
   height: 40px;
   border-radius: 10px;
   border: none;
-  padding: 7px;
+  padding: 10px;
+  :focus{
+    border: none;
+  }
 }

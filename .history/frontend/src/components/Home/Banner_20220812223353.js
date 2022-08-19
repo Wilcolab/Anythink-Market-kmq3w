@@ -7,8 +7,8 @@ const Banner = () => {
       <div className="container p-4 text-center">
         <img src={logo} alt="banner" />
         <div>
-          <span id="get-part">A place to get </span>
-          <input className="search-bar" type='text' placeholder='search the item'/>
+          <span id="get-part" className="h-12">A place to get </span>
+          <input type='text' placeholder='search the item'/>
           <span> the cool stuff.</span>
         </div>
       </div>
